@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const _radius = new WeakMap();
+      const _draw = new WeakMap();
+      const propsDataSet = new WeakMap();
+      class Circle {
+        constructor(radius) {
+          propsDataSet.set(this, {
+            radius: radius,
+            draw: function() {
+              console.log("hello draw");
+            }
+          });
+          _radius.set(this, radius);
+          _draw.set(this, function() {
+            console.log("move");
+          });
+        }
+        draw() {
+          console.log(_radius.get(this));
+          _draw.get(this)();
+        }
+        hello() {
+          console.log(propsDataSet.get(this).radius);
+          propsDataSet.get(this).draw();
+        }
+      }
+      const c = new Circle(2);
+    </script>
+  </body>
+</html>

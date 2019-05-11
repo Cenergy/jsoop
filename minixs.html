@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const canEat = {
+        eat: function() {
+          console.log("eating");
+        }
+      };
+      const canWalk = {
+        walk: function() {
+          console.log("eating");
+        }
+      };
+      const canSwin = {
+        swin: function() {
+          console.log("swining");
+        }
+      };
+      //   const person = Object.assign({}, canEat, canWalk);
+      //   console.log(person);
+      function mixins(target, ...sources) {
+        Object.assign(target.prototype, ...sources);
+      }
+      //   function Person() {}
+      //   Object.assign(Person.prototype, canEat, canWalk);
+      //   console.log(new Person());
+
+      function Dog() {}
+      mixins(Dog, canEat, canWalk);
+      console.log(new Dog());
+      function GoldFish() {}
+      mixins(GoldFish, canEat, canSwin);
+      console.log(new GoldFish());
+    </script>
+  </body>
+</html>
