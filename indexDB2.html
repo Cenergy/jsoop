@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const request = indexedDB.open("myDatabase4", 3);
+      request.addEventListener("upgradeneeded", e => {
+        const db = e.target.result;
+        const store = db.createObjectStore("Users", {
+          keyPath: "userId",
+          autoIncrement: false
+        });
+        console.log("创建对象仓库成功");
+      });
+
+      request.addEventListener("success", e => {
+        const db = e.target.result;
+
+        const tx = db.transaction("Users", "readwrite");
+
+        const store = tx.objectStore("Users");
+
+        // 保存数据
+        const reqAdd = store.add({
+          userId: 2,
+          userName: "李白",
+          age: 24,
+          hello: "world"
+        });
+
+        reqAdd.addEventListener("success", e => {
+          console.log("保存成功");
+        });
+      });
+      request.addEventListener("success", e => {
+        const db = e.target.result;
+
+        const tx = db.transaction("Users", "readwrite");
+
+        const store = tx.objectStore("Users");
+
+        // 获取数据
+        const reqGet = store.get(2);
+
+        reqGet.addEventListener("success", e => {
+          console.log(e.srcElement.result); // 李白
+        });
+      });
+    </script>
+  </body>
+</html>

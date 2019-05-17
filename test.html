@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.bootcss.com/axios/0.17.1/axios.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      async function getImgBlob() {
+        const promises = [];
+        for (let i = 0; i < 5; i += 1) {
+          const url = `https://docs.mapbox.com/mapbox-gl-js/assets/radar${i}.gif`;
+          console.log(
+            "rd: LayerProvider -> _getParseLayerGeodatas -> url",
+            url
+          );
+          promises.push(
+            axios({
+              method: "get",
+              url,
+              responseType: "blob"
+            })
+          );
+        }
+        const results = await Promise.all(promises);
+        results.map((item, index) => {
+          console.log(item, index);
+        });
+      }
+      getImgBlob();
+    </script>
+  </body>
+</html>

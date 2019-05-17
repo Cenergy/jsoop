@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let _items = new WeakMap();
+      class Stack {
+        constructor() {
+          _items.set(this, []);
+        }
+        push(obj) {
+          _items.get(this).push(obj);
+        }
+        pop() {
+          const items = _items.get(this);
+          if (items.length === 0) throw new Error("stack is empty");
+          return items.pop();
+        }
+        peek() {
+          const items = _items.get(this);
+          if (items.length === 0) throw new Error("stack is empty");
+          return items[items.length - 1];
+        }
+        get count() {
+          return _items.get(this).length;
+        }
+      }
+    </script>
+  </body>
+</html>

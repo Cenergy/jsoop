@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://cdn.bootcss.com/axios/0.17.1/axios.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function getArrayUrlObj(frameCount) {
+        let customerData = [];
+        for (let i = 0; i < frameCount; i++) {
+          let urlValue = `https://docs.mapbox.com/mapbox-gl-js/assets/radar${i}.gif"`;
+          let keyValue = { imgUrl: urlValue, userId: i };
+          customerData.push(keyValue);
+        }
+        return customerData;
+      }
+
+      function getData(imgUrl) {
+        var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", imgUrl, true);
+        xmlhttp.responseType = "blob";
+        xmlhttp.onload = function() {
+          console.log(this);
+          if (this.status == 200) {
+            var blob = this.response;
+            var img = document.createElement("img");
+            img.onload = function(e) {
+              window.URL.revokeObjectURL(img.src);
+            };
+            img.src = window.URL.createObjectURL(blob);
+            document.body.appendChild(img);
+          }
+        };
+        xmlhttp.send();
+      }
+
+      const request = indexedDB.open("geodata12", 3);
+      request.addEventListener("upgradeneeded", e => {
+        const db = e.target.result;
+        const store = db.createObjectStore("Users", {
+          keyPath: "userId",
+          autoIncrement: false
+        });
+        console.log("创建对象仓库成功");
+      });
+      async function getImgBlob() {
+        const promises = [];
+        console.log("12132131231");
+        for (let i = 0; i < 5; i += 1) {
+          const url = `https://docs.mapbox.com/mapbox-gl-js/assets/radar${i}.gif`;
+          promises.push(
+            axios({
+              method: "get",
+              url,
+              responseType: "blob"
+            })
+          );
+        }
+        const results = await Promise.all(promises);
+        request.addEventListener("success", e => {
+          const db = e.target.result;
+
+          const tx = db.transaction("Users", "readwrite");
+
+          const store = tx.objectStore("Users");
+          let reqAdd;
+          console.log(results);
+          results.map((item, index) => {
+            let blobUrl = window.URL.createObjectURL(item.data);
+            console.log(
+              "输出------->: getImgBlob -> { imgUrl: blobUrl, userID: index }",
+              { imgUrl: blobUrl, userID: index }
+            );
+            reqAdd = store.add({ imgUrl: blobUrl, userID: index });
+          });
+
+          // 保存数据
+
+          reqAdd.addEventListener("success", e => {
+            console.log("保存成功");
+          });
+        });
+      }
+
+      getImgBlob();
+      request.addEventListener("success", e => {
+        const db = e.target.result;
+
+        const tx = db.transaction("Users", "readwrite");
+
+        const store = tx.objectStore("Users");
+
+        // 获取数据
+        const reqGet = store.get(3);
+
+        reqGet.addEventListener("success", e => {
+          console.log(e.srcElement.result); // 李白
+        });
+      });
+    </script>
+  </body>
+</html>

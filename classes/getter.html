@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let _radius = new WeakMap();
+      class Circle {
+        constructor(radius) {
+          _radius.set(this, radius);
+          Object.defineProperty(this, "radius1", {
+            get: function() {
+              return _radius.get(this);
+            }
+          });
+        }
+        get radius() {
+          return _radius.get(this);
+        }
+        set radius(value) {
+          if (value <= 0) throw new Error("invaild radius");
+          _radius.set(this, value);
+        }
+      }
+      const c = new Circle(123);
+      //   c.radius=10
+    </script>
+  </body>
+</html>
