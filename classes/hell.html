@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class Dog {
+        constructor() {
+          console.log("dog");
+        }
+      }
+      class Cat {
+        constructor() {
+          console.log("cat");
+        }
+      }
+      class DogHandler {
+        eat() {
+          console.log("dog eat");
+        }
+      }
+      class CatHandler {
+        eat() {
+          console.log("cat eat");
+        }
+      }
+      let doghandler = new DogHandler();
+      let cathandler = new CatHandler();
+      let AAA = new Map();
+      AAA.set(Dog.prototype, doghandler);
+      AAA.set(Cat.prototype, cathandler);
+      function eat(drawable) {
+        let prototypeAnimal = Object.getPrototypeOf(drawable);
+        if (!prototypeAnimal) {
+          console.log("no implement");
+          return;
+        }
+        let aaa = AAA.get(prototypeAnimal);
+        return aaa.eat();
+      }
+      let cat = new Cat();
+      let dog = new Dog();
+      eat(cat);
+      eat(dog);
+    </script>
+  </body>
+</html>
