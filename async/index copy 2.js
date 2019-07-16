@@ -1,12 +1,8 @@
 console.log("before");
 getUser(1).then(res => {
-  console.log(res);
-});
-console.log("after");
+  console.log(res);  
 
-//callback
-
-//promise
+//promise 
 //asyn/await
 function getUser(id) {
   return new Promise((resolve, reject) => {
