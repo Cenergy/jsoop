@@ -12,8 +12,4 @@ function getUser(id) {
     return { id: id, username: "helloworld" };
   }, 2000);
 }
-// 输出：
-// before
-// Go: user undefined
-// after
-// Get user from database
+

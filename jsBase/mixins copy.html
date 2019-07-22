@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // let mix = superclass => new MixinBuilder(superclass);
+      class Test {
+        test() {
+          console.log("test");
+        }
+      }
+
+      class MixinBuilder {
+        constructor(superclass) {
+          this.superclass = superclass;
+        }
+        hello() {
+          console.log("hello");
+        }
+
+        with(...mixins) {
+          return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+        }
+      }
+
+      let mix = new MixinBuilder(Test);
+      console.log("Go: mix", mix);
+    </script>
+  </body>
+</html>
