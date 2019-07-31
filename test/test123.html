@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Add a GeoJSON polygon</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoieWFteSIsImEiOiJjanI2MDlxMDkwazl4NDNwaG5iMjJ3czBxIn0.AobOEFxFlQpsx1GCoHb-Aw";
+      var map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/dark-v9",
+        center: [113.6755, 22.7197],
+        zoom: 10
+      });
+      const EagleEyeMap_SOURCE = "EagleEyeMap_SOURCE";
+      const EagleEyeMap_ID = "EagleEyeMap_ID";
+      const eagleEyeData = {
+        features: [],
+        type: "FeatureCollection"
+      };
+      map.on("load", () => {
+        class EagleEyeMap {
+          constructor(options) {
+            this._map;
+          }
+        }
+
+        map.addSource(EagleEyeMap_SOURCE, {
+          type: "geojson",
+          data: eagleEyeData
+        });
+        const layers = map.getStyle().layers;
+        const labelLayerId =
+          layers.find(layer => {
+            return layer.type === "symbol" && layer.layout["text-field"];
+          }) || {};
+        map.addLayer(
+          {
+            id: EagleEyeMap_ID,
+            source: EagleEyeMap_SOURCE,
+            type: "fill",
+            layout: {},
+            paint: {
+              "fill-color": "#088",
+              "fill-outline-color": "yellow",
+              "fill-opacity": 0.8
+            }
+          },
+          labelLayerId.id
+        );
+        async function loadEagleEyeData(url) {
+          const { data, status } = await axios(url);
+          if (status !== 200) return;
+          map.getSource(EagleEyeMap_SOURCE).setData(data);
+          console.log("go: loadEagleEyeData -> data", data);
+        }
+        loadEagleEyeData("./guangdong.json");
+      });
+      function hightLightArea(option = {}) {
+        let { id, color } = option;
+        let hightLightList = [];
+        hightLightList.push(id);
+        hightLightList.push(color);
+        map.setPaintProperty(EagleEyeMap_ID, "fill-color", [
+          "match",
+          ["get", "id"],
+          ...hightLightList,
+          "#088"
+        ]);
+      }
+      map.on("click", e => {
+        var features = map.queryRenderedFeatures(e.point, {
+          layers: [EagleEyeMap_ID]
+        });
+        if (features.length > 0) {
+          const properties = features[0].properties;
+          hightLightArea({ id: properties.id, color: "red" });
+        } else {
+          map.setPaintProperty(EagleEyeMap_ID, "fill-color", "#088");
+        }
+      });
+    </script>
+  </body>
+</html>
